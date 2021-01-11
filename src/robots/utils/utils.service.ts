@@ -65,7 +65,7 @@ export const checkLimitsGrid = (
     coords.xCoordinate < 0 ||
     coords.yCoordinate < 0 ||
     coords.xCoordinate > maxCoords.xCoordinate ||
-    coords.yCoordinate < maxCoords.yCoordinate
+    coords.yCoordinate > maxCoords.yCoordinate
   );
 };
 
