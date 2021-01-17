@@ -1,4 +1,4 @@
-import { Direction, Orientation } from '../enums';
+import { Direction, Orientation, State } from '../enums';
 import { IPosition } from '../interfaces';
 
 export const changeOrientation = (
@@ -77,4 +77,13 @@ export const isSamePosition = (
     newCoord.xCoordinate === coord.xCoordinate &&
     newCoord.yCoordinate === coord.yCoordinate
   );
+};
+
+export const parseOutputsToText = (outputs: any[]): string => {
+  return outputs
+    .map((output) => {
+      const state = output['state'] === State.LOST ? State.LOST : '';
+      return `${output['xCoordinate']} ${output['yCoordinate']} ${output['orientation']} ${state}`;
+    })
+    .join('\n');
 };

@@ -1,19 +1,19 @@
-import { STATES } from 'mongoose';
-import { getInputs } from '../../inputs/services';
-import { IRobotDto } from '../dto';
+import { BaseError } from '../../errors';
+import { IInput } from '../../inputs/interfaces';
 import { Direction, State } from '../enums';
-import { IPosition, IRobot } from '../interfaces';
+import { IRobot } from '../interfaces';
 import { Robot } from '../models';
 import {
   changeOrientation,
   checkLimitsGrid,
   isSamePosition,
   moveForward
-} from '../utils/utils.service';
+} from '../utils';
 
-export const assignSurfaceToExplore = async (): Promise<IRobot[]> => {
+export const assignSurfaceToExplore = async (
+  inputs: IInput[]
+): Promise<IRobot[]> => {
   try {
-    const inputs = await getInputs();
     return Promise.all(
       inputs.map(async (input) => {
         return await new Robot({
@@ -32,86 +32,91 @@ export const assignSurfaceToExplore = async (): Promise<IRobot[]> => {
       })
     );
   } catch (error) {
-    console.log(error);
-    return error;
+    throw new BaseError(error);
   }
 };
 
-export const exploreSurface = async () => {
-  const robots: IRobot[] = await Robot.find().sort({ _id: 1 }).exec();
+export const exploreSurface = async (robots: IRobot[]): Promise<IRobot[]> => {
   const lostPositions: { xCoordinate: number; yCoordinate: number }[] = [];
 
-  robots.map(async (robot) => {
-    for (let i = 0; i < robot.instructions.length; i++) {
-      if (robot.instructions[i] === Direction.FORWARD) {
-        const { xCoordinate, yCoordinate } = moveForward(
-          robot.currentPosition.orientation,
-          {
-            xCoordinate: robot.currentPosition.xCoordinate,
-            yCoordinate: robot.currentPosition.yCoordinate
-          }
-        );
-        if (
-          !lostPositions.find((position) =>
-            isSamePosition(
-              { xCoordinate: xCoordinate, yCoordinate: yCoordinate },
-              position
-            )
-          )
-        ) {
+  return Promise.all(
+    robots.map(async (robot) => {
+      for (let i = 0; i < robot.instructions.length; i++) {
+        if (robot.instructions[i] === Direction.FORWARD) {
+          const { xCoordinate, yCoordinate } = moveForward(
+            robot.currentPosition.orientation,
+            {
+              xCoordinate: robot.currentPosition.xCoordinate,
+              yCoordinate: robot.currentPosition.yCoordinate
+            }
+          );
           if (
-            checkLimitsGrid(robot.dimensionToExplore, {
-              xCoordinate,
-              yCoordinate
-            })
+            !lostPositions.find((position) =>
+              isSamePosition(
+                { xCoordinate: xCoordinate, yCoordinate: yCoordinate },
+                position
+              )
+            )
           ) {
-            robot.state = State.LOST;
-            robot.outOfRangePosition = {
-              xCoordinate: xCoordinate,
-              yCoordinate: yCoordinate
-            };
-            lostPositions.push(robot.outOfRangePosition);
-            break;
-          } else {
-            robot.currentPosition = {
-              xCoordinate: xCoordinate,
-              yCoordinate: yCoordinate,
-              orientation: robot.currentPosition.orientation
-            };
-            robot.path.push({
-              xCoordinate: xCoordinate,
-              yCoordinate: yCoordinate,
-              orientation: robot.currentPosition.orientation
-            });
+            if (
+              checkLimitsGrid(robot.dimensionToExplore, {
+                xCoordinate,
+                yCoordinate
+              })
+            ) {
+              robot.state = State.LOST;
+              robot.outOfRangePosition = {
+                xCoordinate: xCoordinate,
+                yCoordinate: yCoordinate
+              };
+              lostPositions.push(robot.outOfRangePosition);
+              break;
+            } else {
+              robot.currentPosition = {
+                xCoordinate: xCoordinate,
+                yCoordinate: yCoordinate,
+                orientation: robot.currentPosition.orientation
+              };
+              robot.path.push({
+                xCoordinate: xCoordinate,
+                yCoordinate: yCoordinate,
+                orientation: robot.currentPosition.orientation
+              });
+            }
           }
+        } else {
+          robot.currentPosition.orientation = changeOrientation(
+            robot.instructions[i],
+            robot.currentPosition.orientation
+          );
+          robot.path.push({
+            xCoordinate: robot.currentPosition.xCoordinate,
+            yCoordinate: robot.currentPosition.yCoordinate,
+            orientation: robot.currentPosition.orientation
+          });
         }
-      } else {
-        robot.currentPosition.orientation = changeOrientation(
-          robot.instructions[i],
-          robot.currentPosition.orientation
-        );
-        robot.path.push({
-          xCoordinate: robot.currentPosition.xCoordinate,
-          yCoordinate: robot.currentPosition.yCoordinate,
-          orientation: robot.currentPosition.orientation
-        });
       }
-    }
-    if (robot.state === State.WORKING) {
-      robot.state = State.FINISHED;
-    }
-    await robot.save();
-  });
+      if (robot.state === State.WORKING) {
+        robot.state = State.FINISHED;
+      }
+      await robot.save();
+      return robot;
+    })
+  );
 };
 
 export const findRobots = (): Promise<IRobot[]> => {
   try {
     return Robot.find().sort({ _id: 1 }).exec();
   } catch (error) {
-    return error;
+    throw new BaseError(error);
   }
 };
 
 export const findRobotsByState = (state: State): Promise<IRobot[]> => {
-  return Robot.find({ state: state }).exec();
+  try {
+    return Robot.find({ state: state }).exec();
+  } catch (error) {
+    throw new BaseError(error);
+  }
 };

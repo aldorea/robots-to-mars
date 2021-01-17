@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { createInput } from '../controllers';
+import { getInputs } from '../controllers';
 
 const router = Router();
 
-router.post('/create', createInput);
+router.get('/', getInputs);
 
 export default router;

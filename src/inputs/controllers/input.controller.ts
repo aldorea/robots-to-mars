@@ -1,15 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import { IInput } from '../interfaces';
-import { createInstructions } from '../services';
+import { findInputs } from '../services';
 
-export const createInput = async (
+export const getInputs = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<any> => {
+): Promise<Response<IInput[]> | undefined> => {
   try {
-    return res.json(await createInstructions(req.body as string));
+    const inputs = await findInputs();
+    return res.status(200).json(inputs);
   } catch (error) {
-    return error;
+    next(error);
   }
 };
