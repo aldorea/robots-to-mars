@@ -1,3 +1,4 @@
+import { BaseError } from '../../errors';
 import { IInput } from '../../inputs/interfaces';
 import { Direction, State } from '../enums';
 import { IRobot } from '../interfaces';
@@ -31,7 +32,7 @@ export const assignSurfaceToExplore = async (
       })
     );
   } catch (error) {
-    throw new Error('error');
+    throw new BaseError(error);
   }
 };
 
@@ -108,7 +109,7 @@ export const findRobots = (): Promise<IRobot[]> => {
   try {
     return Robot.find().sort({ _id: 1 }).exec();
   } catch (error) {
-    throw new Error('error');
+    throw new BaseError(error);
   }
 };
 
@@ -116,6 +117,6 @@ export const findRobotsByState = (state: State): Promise<IRobot[]> => {
   try {
     return Robot.find({ state: state }).exec();
   } catch (error) {
-    throw new Error('error');
+    throw new BaseError(error);
   }
 };

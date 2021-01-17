@@ -3,9 +3,12 @@ import {
   createInstructions,
   findInputs
 } from '../src/inputs/services/input.service';
-import { Orientation } from '../src/robots/enums';
 import mockingoose from 'mockingoose';
-import { rejects } from 'assert';
+import {
+  INTERNAL_SERVER_ERROR,
+  MAX_COORDINATE_MESSAGE
+} from '../src/constants';
+import { BaseError, DataError } from '../src/errors';
 
 const mockInputs = [
   {
@@ -51,7 +54,7 @@ FRRFLLFFRRFLL
 LLFFFLFLFL`;
 
 describe('Input Service', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     jest.useFakeTimers();
     mockingoose.resetAll();
     jest.clearAllMocks();
@@ -65,19 +68,19 @@ describe('Input Service', () => {
     );
   });
 
-  it('should fail when x and y cordinates are bigger than 50', async () => {
-    expect(async () => {
-      await createInstructions(`5 3\n51 50 E`);
-    }).rejects.toThrow('Too big');
+  it('should fail when  and y cordinates are bigger than 50', async () => {
+    expect(createInstructions(`5 3\n51 50 E`)).rejects.toThrow(
+      new DataError(MAX_COORDINATE_MESSAGE)
+    );
   });
 
   it('should fail when trying to save', async () => {
-    jest.spyOn(Input.prototype, 'save').mockImplementation(() => {
-      throw new Error('Error');
+    jest.spyOn(Input.prototype, 'save').mockImplementationOnce(() => {
+      throw new DataError();
     });
-    expect(async () => {
-      await createInstructions(mockTextInstructions);
-    }).rejects.toThrow('Error');
+    expect(
+      async () => await createInstructions(mockTextInstructions)
+    ).rejects.toThrow(new DataError());
   });
 
   it('should return all inputs', async () => {
@@ -88,10 +91,10 @@ describe('Input Service', () => {
 
   it('should fail when finding inputs', async () => {
     jest.spyOn(Input, 'find').mockImplementationOnce(() => {
-      throw new Error('error');
+      throw new BaseError(INTERNAL_SERVER_ERROR);
     });
-    expect(() => {
-      findInputs();
-    }).toThrow('error');
+    expect(async () => await findInputs()).rejects.toThrow(
+      new BaseError(INTERNAL_SERVER_ERROR)
+    );
   });
 });
