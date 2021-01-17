@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import InputRoute from './inputs/routes/input.routes';
-import RobotRoute from './robots/router/robot.route';
+import RobotRoute from './robots/routes/robot.route';
 import OutputRoute from './outputs/routes/output.routes';
 
 const router = Router();
