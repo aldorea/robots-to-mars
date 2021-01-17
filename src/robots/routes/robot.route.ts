@@ -6,7 +6,7 @@ import {
 
 const router = Router();
 
-router.get('/', createExploration);
+router.post('/', createExploration);
 router.get('/lost', getLostRobots);
 
 export default router;
