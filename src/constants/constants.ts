@@ -16,9 +16,10 @@ export const MAX_INSTRUCTIONS = process.env.MAX_INSTRUCTIONS || 100;
 export const SUCCESS = 'Success';
 
 // Error Messages
-export const MAX_INSTRUCTIONS_MESSAGE = 'The value it´s out of range';
+export const MAX_INSTRUCTIONS_MESSAGE =
+  'Instructions must not be grater than 100';
 export const NO_DATA = 'Data requiered';
 export const NOT_FOUND = 'Not Found';
 export const MAX_COORDINATE_MESSAGE =
-  'Coordinates values must noT be greater than 50';
+  'Coordinates values must not be greater than 50';
 export const INTERNAL_SERVER_ERROR = 'Internal server error';

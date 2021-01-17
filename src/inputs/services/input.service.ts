@@ -49,7 +49,7 @@ export const createInstructions = async (data: string): Promise<IInput[]> => {
 
     return inputs;
   } catch (error) {
-    throw new DataError();
+    throw new BaseError(error.message, error.status);
   }
 };
 
