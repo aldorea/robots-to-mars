@@ -8,15 +8,8 @@ export const getOutputs = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    // console.log('hola');
-    const outputs = (await findOutputs()) as any[];
-    const outputsTxt = outputs
-      .map((output) => {
-        const state = output['state'] === State.LOST ? State.LOST : '';
-        return `${output['xCoordinate']} ${output['yCoordinate']} ${output['orientation']} ${state}`;
-      })
-      .join('\n');
-    return res.send(outputsTxt);
+    const outputs = await findOutputs();
+    return res.json(outputs);
   } catch (error) {
     next(error);
   }
