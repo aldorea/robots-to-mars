@@ -1,5 +1,11 @@
 # Robots to Mars
 
+### Installl dependencies
+
+```
+npm install
+```
+
 ### Run application
 
 ```
