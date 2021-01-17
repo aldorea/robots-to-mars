@@ -245,7 +245,7 @@ describe('Robot service', () => {
     }).rejects.toThrow('error');
   });
 
-  xit('Should create a exploration surface', async () => {
+  it('Should create a exploration surface', async () => {
     const _docs = mockRobot;
     mockingoose(Robot).toReturn(_docs, 'find');
     const robots = await Robot.find().sort({ _id: 1 }).exec();
@@ -256,7 +256,7 @@ describe('Robot service', () => {
   it('Should find all robots', async () => {
     const _docs = mockRobot;
     mockingoose(Robot).toReturn(_docs, 'find');
-    const robots = await Robot.find().sort({ _id: 1 }).exec();
+    const robots = Robot.find().sort({ _id: 1 }).exec();
     expect(findRobots()).resolves.toMatchObject(robots);
   });
 
