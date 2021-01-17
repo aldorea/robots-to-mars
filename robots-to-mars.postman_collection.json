@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "310ccfda-4518-4671-9ca7-70b35a69fcaa",
+		"name": "robots-to-mars",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get inputs",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/inputs",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"inputs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create robots",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "5 3\n1 1 EE\nRFRFRFRF\n3 2 N\nFRRFLLFFRRFLL\n0 3 W\nLLFFFLFLFL"
+				},
+				"url": {
+					"raw": "localhost:3000/robots",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"robots"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get outputs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/outputs",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"outputs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get lost robots",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/robots/lost",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"robots",
+						"lost"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
