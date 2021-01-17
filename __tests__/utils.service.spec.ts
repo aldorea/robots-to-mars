@@ -3,8 +3,33 @@ import {
   changeOrientation,
   checkLimitsGrid,
   isSamePosition,
-  moveForward
+  moveForward,
+  parseOutputsToText
 } from '../src/robots/utils/utils.service';
+
+const mockOuputs = [
+  {
+    _id: '6003691fc2bd2e49c7e2acf9',
+    xCoordinate: 1,
+    yCoordinate: 1,
+    orientation: 'E',
+    state: 'FINISHED'
+  },
+  {
+    _id: '6003691fc2bd2e49c7e2acfa',
+    xCoordinate: 3,
+    yCoordinate: 3,
+    orientation: 'N',
+    state: 'LOST'
+  },
+  {
+    _id: '6003691fc2bd2e49c7e2acfb',
+    xCoordinate: 2,
+    yCoordinate: 3,
+    orientation: 'S',
+    state: 'FINISHED'
+  }
+];
 
 describe('Utils Service', () => {
   beforeEach(() => {
@@ -89,5 +114,11 @@ describe('Utils Service', () => {
         { xCoordinate: 1, yCoordinate: 2 }
       )
     ).toBeTruthy();
+  });
+
+  it('Should parse inputs objects to string', () => {
+    expect(parseOutputsToText(mockOuputs)).toEqual(
+      `1 1 E \n3 3 N LOST\n2 3 S `
+    );
   });
 });
